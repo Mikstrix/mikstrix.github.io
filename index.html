@@ -422,12 +422,12 @@
       </ul>
       <p><strong>Expected Pull Rates:</strong></p>
       <ul>
-        <li>Crown Rares: 0.193%</li>
-        <li>Triple Stars: 1.12%</li>
-        <li>Double Stars: 2.55%</li>
-        <li>Single Stars: 12.7%</li>
-        <li>Quad Diamonds: 7.32%</li>
-        <li>Rare (God Pack): 0.05%</li>
+        <li id="crCardsHow">Crown Rares: </li>
+        <li id="3sCardsHow">Triple Stars: </li>
+        <li id="2sCardsHow">Double Stars: </li>
+        <li id="1sCardsHow">Single Stars: </li>
+        <li id="4dCardsHow">Quad Diamonds: </li>
+        <li id="rareCardsHow">Rare (God Pack): </li>
       </ul>
       <p>
         <strong>Note:</strong> Cards below Quad Diamonds are not tracked individually;
@@ -438,7 +438,28 @@
 
   <script>
     // Save input values locally
+    const rarities = ['crCards', '3sCards', '2sCards', '1sCards', '4dCards', 'rareCards'];
     const inputIds = ['crCards', '3sCards', '2sCards', '1sCards', '4dCards', 'rareCards', 'packsOpened'];
+    const rarePackRate = 1/2000;
+    const pullRates = {
+      "crCards": (1-rarePackRate)*(.00040+.00160) + rarePackRate*((.03846+.05555+.05263)*5/3),
+      "3sCards": (1-rarePackRate)*(.00888+.00222) + rarePackRate*((.03846+.05555+.05263)*5/3),
+      "2sCards": (1-rarePackRate)*(.00500+.02000) + rarePackRate*((.47368+.55555+.46153)*5/3),
+      "1sCards": (1-rarePackRate)*(.02572+.10288) + rarePackRate*((.42105+.33333+.46153)*5/3),
+      "4dCards": (1-rarePackRate)*(.01666+.06664),
+      "rareCards": rarePackRate
+    };
+    const displayNames = {
+      "crCards": "👑 Crown Rares",
+      "3sCards": "⭐⭐⭐ Triple Stars",
+      "2sCards": "⭐⭐ Double Stars",
+      "1sCards": "⭐ Single Stars",
+      "4dCards": "♦♦♦♦ Quad Diamonds",
+      "rareCards": "Rare (God Pack)"
+    };
+    for (let rarity of rarities) {
+      document.getElementById(rarity+"How").innerHTML += `${(pullRates[rarity]*100).toFixed(2)}%`;
+    }
     document.addEventListener("DOMContentLoaded", () => {
       inputIds.forEach(id => {
         const saved = localStorage.getItem(id);
@@ -529,32 +550,32 @@
       ]
     };
     const zeroRarityDescriptions = {
-      "👑 Crown Rare": [
+      "crCard": [
         "No Crown Rares—every legend has an off day.",
         "Zero Crown Rares—the pinnacle remained elusive.",
         "No Crown Rares—the highest tier slipped by."
       ],
-      "⭐⭐⭐ Triple Star": [
+      "3sCards": [
         "No Triple Stars—the brilliance did not shine today.",
         "Zero Triple Stars—a rare miss in this luminous category.",
         "No Triple Stars—the spark of rarity was missing."
       ],
-      "⭐⭐ Double Star": [
+      "2sCards": [
         "No Double Stars—a disappointing void in this tier.",
         "Zero Double Stars—the usual shine was absent.",
         "No Double Stars—a gap in your collection."
       ],
-      "⭐ Single Star": [
+      "1sCards": [
         "No Single Stars—even the common ones hid away.",
         "Zero Single Stars—a surprising void at the base level.",
         "No Single Stars—an unexpected miss in everyday pulls."
       ],
-      "♦♦♦♦ Quadruple Diamond": [
+      "4dCards": [
         "No Quad Diamonds—the gems failed to sparkle.",
         "Zero Quad Diamonds—the rare jewels were nowhere to be found.",
         "No Quad Diamonds—the shine of perfection was absent."
       ],
-      "Rare (God Pack)": [
+      "rareCards": [
         "No Rare Pack cards—the ultimate rarity was completely missed.",
         "Zero Rare Pack cards—the jackpot remained locked.",
         "No Rare Pack cards—the gods of rarity were silent."
@@ -670,12 +691,12 @@
       }, 6000);
     }
     const raritySprites = {
-      "👑 Crown Rare": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png",
-      "⭐⭐⭐ Triple Star": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
-      "⭐⭐ Double Star": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-      "⭐ Single Star": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-      "♦♦♦♦ Quadruple Diamond": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/249.png",
-      "Rare (God Pack)": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/384.png"
+      "crCard": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/150.png",
+      "3sCards": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+      "2sCards": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+      "1sCards": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+      "4dCards": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/249.png",
+      "rareCards": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/384.png"
     };
     function spawnRandomBackgroundPokemon() {
       const keys = Object.keys(raritySprites);
@@ -762,28 +783,13 @@
       saveInputs();
     }
     function calculateScore() {
-      const pulls = {
-        "👑 Crown Rares": parseInt(document.getElementById('crCards').value) || 0,
-        "⭐⭐⭐ Triple Star": parseInt(document.getElementById('3sCards').value) || 0,
-        "⭐⭐ Double Star": parseInt(document.getElementById('2sCards').value) || 0,
-        "⭐ Single Star": parseInt(document.getElementById('1sCards').value) || 0,
-        "♦♦♦♦ Quadruple Diamond": parseInt(document.getElementById('4dCards').value) || 0,
-        "Rare (God Pack)": parseInt(document.getElementById('rareCards').value) || 0
-      };
-      const pullRates = {
-        "👑 Crown Rares": 0.00193,
-        "⭐⭐⭐ Triple Star": 0.0112,
-        "⭐⭐ Double Star": 0.0255,
-        "⭐ Single Star": 0.127,
-        "♦♦♦♦ Quadruple Diamond": 0.0732,
-        "Rare (God Pack)": 1/2000
-      };
       let resultsHTML = "<ul>";
       let totalLuck = 0;
       const packsOpened = parseInt(document.getElementById('packsOpened').value);
       const spawnedRarities = {};
-      for (let rarity in pulls) {
-        let actual = pulls[rarity];
+      for (let rarity of rarities) {
+        let displayName = displayNames[rarity];
+        let actual = parseInt(document.getElementById(rarity).value) || 0;
         let expected = pullRates[rarity] * packsOpened;
         let luckDisplay = "";
         let desc = "";
@@ -808,7 +814,7 @@
         }
         resultsHTML += `
           <li>
-            <strong>${rarity}:</strong> Actual: <span class="score-number">${actual}</span>, Expected: <span class="score-number">${expected.toFixed(1)}</span><br><br>
+            <strong>${displayName}:</strong> Actual: <span class="score-number">${actual}</span>, Expected: <span class="score-number">${expected.toFixed(1)}</span><br><br>
             <strong>Luck Factor:</strong> ${luckDisplay}<br><br>
             <em>${desc}</em>
           </li>`;
